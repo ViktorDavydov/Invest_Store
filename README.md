@@ -12,4 +12,4 @@
 
 Настройка ввода (POST)
 1. Прописываем в index.html защиту ВАЖНО! {% csrf_token %}, <form method="post"> и формы ввода
-2. В контроллере прописываем логику if request.method == "POST": name = request.POST.get('name) и тд.
+2. В контроллере прописываем логику if request.method == "POST": name = request.POST.get('name') и тд.
