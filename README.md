@@ -13,3 +13,16 @@
 Настройка ввода (POST)
 1. Прописываем в index.html защиту ВАЖНО! {% csrf_token %}, <form method="post"> и формы ввода
 2. В контроллере прописываем логику if request.method == "POST": name = request.POST.get('name') и тд.
+
+
+ORM
+**Настройка подключения к БД**
+1. Устанавливаем psycopg2
+2. Прописываем в settings.py параметры БД: 'ENGINE': '...postgresql',
+                                           'NAME': 'db_name',
+                                           'USER': 'postgres',
+                                           'PASSWORD': 'secret',
+                                           'HOST': '127.0.0.1', - Необязательно, если сервер локальный
+                                           'PORT': 5432 - Необязательно, если сервер локальный
+
+3. В консоли подключаемся к БД: "psql -U postgres", создаем БД db_name: "create database dm_name;"
