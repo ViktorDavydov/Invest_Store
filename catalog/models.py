@@ -8,7 +8,7 @@ class Category(models.Model):
     category_description = models.CharField(max_length=100, verbose_name='описание категории')
 
     def __str__(self):
-        return f'{self.category_name}'
+        return f'{self.category_name} - {self.category_description}'
 
     class Meta:
         verbose_name = 'категория'
