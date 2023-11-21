@@ -35,7 +35,7 @@ ORM
 Прописываем поля в формате name = models.CharField(max_length=..., verbose_name='...') / image = models.ImageField(upload_to='directory_name/', verbose_name='...', **NULLABLE), где NULLABLE = {'blank': True, 'null': True} в самом начале.
 Далее __str__, class Meta внутри нашей модели - в классе verbose_name = "название модели", verbose_name_plural = "название модели в множ. числе", ordering = ('название поля',) - упорядочивание в отображении по умолчанию (например по алфавиту и тд)
 5. Создаем и выполняем миграцию "python manage.py makemigrations". В определенных случаях необходимо указывать название приложения "python manage.py makemigrations <app_name>". Далее "python manage.py migrate". В migrations можно увидеть созданный уникальный 'id' модели.
-6. Далее в самом конце settings.py прописываем пути для сохранения медиа: MEDIA_URL = '/media/'
+6. Далее в папке приложения создаем директорию media и в самом конце settings.py прописываем пути для сохранения медиа: MEDIA_URL = '/media/'
                                                                           MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 7. В урлах config после списка паттернов прописываем:
 if settings.DEBUG:
@@ -45,4 +45,12 @@ static - импортируем СТРОГО!!! from django.conf.urls.static imp
 
 **Админка**
 1. "python manage.py createsuperuser" - создаем суперпользователя (себя) - Имя, почта пароль и тд. Для отображения русского языка админки можно в settings.py сделать LANGUAGE_CODE = "ru-ru"
-2. 
+2. Зайти в админ панель можно добавив в конце адресной строки /admin
+3. В admin.py регистрируем модель "admin.site.register(model_name)". Другой вариант:
+@admin.register(model_name)
+class model_nameAdmin(admin.ModelAdmin):
+  list_display = ('первое_поле', 'второе поле',) - структурированное отображение, название столбцов берется из verbose_name для конкретного поля из моделей
+  list_filter = ('произвольное поле',) - добавление возможности фильтрации
+  search_fields = ('первое_поле', 'второе_поле',) - возможности поиска без учета регистра
+В админ панеле при добавлении позиции необходимо заполнить поля, которые были прописаны при создании модели. А отображение в списке, осуществляется в виде str, прописанного в моделе.
+5. 
