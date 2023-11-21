@@ -1,4 +1,4 @@
-Создание приложения Django
+**Создание приложения Django**
 1. django-admin startproject config . 
 2. python manage.py startapp main
 3. Настраиваем параметры запуска сервера или python manage.py runserver 
@@ -10,7 +10,7 @@
 9. Связываем через include - добавляем в config/urls еще один паттерн path('', include('main.urls'))
 
 
-Настройка ввода (POST)
+**Настройка ввода (POST)**
 1. Прописываем в index.html защиту ВАЖНО! {% csrf_token %}, <form method="post"> и формы ввода
 2. В контроллере прописываем логику if request.method == "POST": name = request.POST.get('name') и тд.
 
@@ -28,7 +28,7 @@ ORM
 
 3. В консоли подключаемся к БД: "psql -U postgres", создаем БД db_name: "create database dm_name;"
 
-**Создание моделей**
+**Создание моделей и миграции**
 1. Перед соданием моделей делаем миграцию "python manage.py migrate"
 2. Устанавливаем Pillow (если планируем работать с медиафалами - видео, картинками, фото и тд.)
 3. В models.py пишем модели (класс), наследуемся от models.Model (models импорт из django.db).
@@ -39,4 +39,10 @@ ORM
                                                                           MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 7. В урлах config после списка паттернов прописываем:
 if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+  urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+(settings - импортируем СТРОГО!!! from django.conf import settings;
+static - импортируем СТРОГО!!! from django.conf.urls.static import static)
+
+**Админка**
+1. "python manage.py createsuperuser" - создаем суперпользователя (себя) - Имя, почта пароль и тд. Для отображения русского языка админки можно в settings.py сделать LANGUAGE_CODE = "ru-ru"
+2. 
