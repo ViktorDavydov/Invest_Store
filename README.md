@@ -61,14 +61,14 @@ Shell
 4. Работа с данными выстроена так: <Model_name>.objects.all(), где objects менеджер моделей для использования методов all, filter, get и тд. Другие варианты получения инф из базы данных: <model_name>.objects.get(pk=1) (в конце можно добавить ._ _dict_ _ для удобства отображения), <Model_name>.objects.filter(<название_поля> = <значение поля>), <Model_name>.objects.exclude(<название_поля> = <значение поля>) - исключение, и т.д. При указании нескольких условий фильтрации или исключения, всегда под капотом используется оператор AND
 
 Фикстуры
-1. dumpdata - сохранение данных из текущей БД. "python manage.py dumpdata > data.json". ВАЖНО - следить за кодировкой, бывает сохраняется коряво кириллица. Когда приложений много необходимо указать наименование "python manage.py dumpdata <app_name> > data.json"
+1. dumpdata - сохранение данных из текущей БД. "python manage.py dumpdata > data.json". ВАЖНО - следить за кодировкой, бывает сохраняется коряво кириллица. Когда приложений много необходимо указать наименование "python manage.py dumpdata <app_name> > <app_name>.json". Кодировка слетает - python -Xutf8 manage.py dumpdata <app_name> -o <app_name>.json
 2. loaddata - загрузка данных в текущую БД. Все тоже самое - "python manage.py loaddata <app_name> data.json"
 Если, например, pk не уникальный - будет добавляться новая запись в БД каждый раз при loaddata
 
 **Кастомные команды**
 1. Создаем ПАКЕТ management в папке приложения
 2. В management создаем ПАКЕТ commands
-3. В commands создаем файл .py с нзванием, по которому будем вызывать команду в формате:
+3. В commands создаем файл .py с названием, по которому будем вызывать команду в формате:
 from django.core.management import BaseCommand - базовый обязательный класс
 
 class Command(BaseCommand):
@@ -81,3 +81,4 @@ class Command(BaseCommand):
 3. Создаем пустой список для заполнения <model_name>_for_create = [] и прописываем цикл for <model_name>_item in <model_name>_list:
 4. В цикле пишем <model_name>_for_create.append(<Model_name>(**<model_name>_item))
 5. Вне цикла пишем <Model_name>.objects.bulk_create(<model_name>_for_create)
+6. python manage.py <исполняемый файл .py>
