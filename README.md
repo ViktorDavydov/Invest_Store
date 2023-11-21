@@ -27,3 +27,16 @@ ORM
                                            'PORT': 5432 - Необязательно, если сервер локальный
 
 3. В консоли подключаемся к БД: "psql -U postgres", создаем БД db_name: "create database dm_name;"
+
+**Создание моделей**
+1. Перед соданием моделей делаем миграцию "python manage.py migrate"
+2. Устанавливаем Pillow (если планируем работать с медиафалами - видео, картинками, фото и тд.)
+3. В models.py пишем модели (класс), наследуемся от models.Model (models импорт из django.db).
+Прописываем поля в формате name = models.CharField(max_length=..., verbose_name='...') / image = models.ImageField(upload_to='directory_name/', verbose_name='...', **NULLABLE), где NULLABLE = {'blank': True, 'null': True} в самом начале.
+Далее __str__, class Meta внутри нашей модели - в классе verbose_name = "название модели", verbose_name_plural = "название модели в множ. числе", ordering = ('название поля',) - упорядочивание в отображении по умолчанию (например по алфавиту и тд)
+5. Создаем и выполняем миграцию "python manage.py makemigrations". В определенных случаях необходимо указывать название приложения "python manage.py makemigrations <app_name>". Далее "python manage.py migrate". В migrations можно увидеть созданный уникальный 'id' модели.
+6. Далее в самом конце settings.py прописываем пути для сохранения медиа: MEDIA_URL = '/media/'
+                                                                          MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+7. В урлах config после списка паттернов прописываем:
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
