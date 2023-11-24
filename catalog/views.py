@@ -1,6 +1,6 @@
 from django.shortcuts import render
 import json
-from catalog.models import Product, Contacts
+from catalog.models import Product, Contacts, Category
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 
@@ -48,3 +48,26 @@ def product(request, pk):
         'chosen_product': chosen_product,
     }
     return render(request, 'catalog/product.html', context)
+
+
+def add_product(request):
+    category_list = Category.objects.all()
+    context = {
+        'category_list': category_list
+    }
+    if request.method == "POST":
+
+        product_information = {
+            "id": 14,
+            "product_name": request.POST.get('name'),
+            "product_description": request.POST.get('description'),
+            "category": request.POST.get('category'),
+            "preview": request.POST.get('preview'),
+            "price": request.POST.get('price'),
+            "create_date": "2000-01-01",
+            "final_change_date": "2023-11-25"
+        }
+        # products_for_create = [Product(**product_information)]
+        # Product.objects.bulk_create(products_for_create)
+        print(product_information)
+    return render(request, 'catalog/add_product.html', context)

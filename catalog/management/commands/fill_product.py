@@ -127,9 +127,9 @@ class Command(BaseCommand):
                 "final_change_date": "2023-11-21"
             }
         ]
-        category_for_create = []
+        products_for_create = []
         for product_item in products_list:
-            category_for_create.append(Product(**product_item))
+            products_for_create.append(Product(**product_item))
 
         Product.objects.all().delete()
-        Product.objects.bulk_create(category_for_create)
+        Product.objects.bulk_create(products_for_create)
