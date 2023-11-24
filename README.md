@@ -1,3 +1,5 @@
+---19.2---
+
 **Создание приложения Django**
 1. django-admin startproject config . 
 2. python manage.py startapp main
@@ -14,6 +16,8 @@
 1. Прописываем в index.html защиту ВАЖНО! {% csrf_token %}, <form method="post"> и формы ввода
 2. В контроллере прописываем логику if request.method == "POST": name = request.POST.get('name') и тд.
 
+
+---20.1---
 
 ORM
 
@@ -60,15 +64,15 @@ Shell
 3. В консоли shell для работы с моделью загружаем её "from <app_name>.models import <model_name>"
 4. Работа с данными выстроена так: <Model_name>.objects.all(), где objects менеджер моделей для использования методов all, filter, get и тд. Другие варианты получения инф из базы данных: <model_name>.objects.get(pk=1) (в конце можно добавить ._ _dict_ _ для удобства отображения), <Model_name>.objects.filter(<название_поля> = <значение поля>), <Model_name>.objects.exclude(<название_поля> = <значение поля>) - исключение, и т.д. При указании нескольких условий фильтрации или исключения, всегда под капотом используется оператор AND
 
-Фикстуры
-1. dumpdata - сохранение данных из текущей БД. "python manage.py dumpdata > data.json". ВАЖНО - следить за кодировкой, бывает сохраняется коряво кириллица. Когда приложений много необходимо указать наименование "python manage.py dumpdata <app_name> > <app_name>.json". Кодировка слетает - python -Xutf8 manage.py dumpdata <app_name> -o <app_name>.json
+**Фикстуры**
+1. dumpdata - сохранение данных из текущей БД. "python manage.py dumpdata > data.json". ВАЖНО - следить за кодировкой, бывает сохраняется коряво кириллица. Когда приложений много необходимо указать наименование "python manage.py dumpdata <app_name> > data.json"
 2. loaddata - загрузка данных в текущую БД. Все тоже самое - "python manage.py loaddata <app_name> data.json"
 Если, например, pk не уникальный - будет добавляться новая запись в БД каждый раз при loaddata
 
 **Кастомные команды**
 1. Создаем ПАКЕТ management в папке приложения
 2. В management создаем ПАКЕТ commands
-3. В commands создаем файл .py с названием, по которому будем вызывать команду в формате:
+3. В commands создаем файл .py с нзванием, по которому будем вызывать команду в формате:
 from django.core.management import BaseCommand - базовый обязательный класс
 
 class Command(BaseCommand):
@@ -81,4 +85,42 @@ class Command(BaseCommand):
 3. Создаем пустой список для заполнения <model_name>_for_create = [] и прописываем цикл for <model_name>_item in <model_name>_list:
 4. В цикле пишем <model_name>_for_create.append(<Model_name>(**<model_name>_item))
 5. Вне цикла пишем <Model_name>.objects.bulk_create(<model_name>_for_create)
-6. python manage.py <исполняемый файл .py>
+
+
+---20.2---
+
+**Статика**
+1. Создаем папку static в корневой папке приложения, в папке static создаем 2е директории css и js.
+2. Проверяем чтобы в settings была настройка обращения к папке static: STATIC_URL = 'static/'
+                                                                        STATICFILES_DIRS = {BASEDIR / 'static',}
+3. Скачиваем архив со стилями с источника (например bootstrap). Размещаем js и css файлы в соответствующие папки в static
+4. В html файле страницы ПЕРВОЙ строкой подгружаем статику {% load static %}. Заменяяем ВСЕ ссылки на статику на формат href="{% static 'scc/bootstrap.min.css' %}" (Тут при перезагрузке сервера, в консоли будут подсказки FileNotFound Error и указана строка в html, где не подтягивается статика - просто везде по порядку корректируем href.
+
+**Шаблоны**
+1. Для применения шаблонизации, например в index.html - необходимо в контроллере index определить исходные данные для тегов.
+2. Работа со списком выстроена так: в контроллер index прописываем <model_name>s_list = <Model_name>.objects.all(). Таким образом мы суда подгружаем исходные данные для работы. Лучше всегда подгружать all() данные, и применять фильтры в html 
+3. На след строке создаем словарь context = {'objects_list': <model_name>s_list}. Тут 'objects_list' - тот самый список, к которому мы будем обращаться в шаблоне.
+4. В return не забываем добавить context: return render(request, 'main/index.html', context)
+5. Далее в html файле, можно сделать цикл некоторых блоков кода, например {% for object in object_list %}<блок кода>{% endfor %}
+6. Внутри <блока кода> можно обращаться к object следующим образом {{ object }}. Таким образом object отображает все значения, точно также как происходит иттерация в python. Важно помнить, что все переменны при обращении через {{}} принимают СТРОКОВЫЕ значения.
+7. Для того чтобы все слова начинались с большой буквы делаем пайп: {{ object|title }}
+8. Конструкция if в <блоке кода>:
+
+{% if object.is_active %} - используем поле модели is_active как свойство и можем его сравнивать и проверять любые условия   
+    {{ object|title }}  
+{% else %}  
+    <span class='text-muted'>{{ object|title }}</span> если не is_active, то делаем текст "не активным"  
+{% endif %}
+
+**Подшаблоны и базовые шаблоны**
+1. Для выделения подшаблона, необходимо сделать его отдельным html. Например, contact.html (не забываем добавить в урлы)
+2. Для разделения на базовый шаблон (создается base.html) и подшаблон, необходимо в базовом в месте вставки подшаблона описать контсрукцию {% block block_name %}{% endblock %}, а в подшаблоне в самом начале {% extends '<app_name>/base.html'} {% block block_name %}, и закрыть в самом конце {% endblock %}
+3. Все подшаблоны складываются в директорию includes в папке templates, называются с приставкой "inc_" и оформляются тем же html файлом. Вставляются в base.html коснтрукцией {% include "<app_name>/includes/inc_....html" %}
+
+**Правильная маршрутизация**  
+Для того чтобы правильно сделать ссылки в меню в html
+1. В config/url.py в path('', include('<app_name>.urls')) добавляем namespace='<app_name>' -> path('', include('<app_name>.urls', namespace='<app_name>'))
+2. В урлы приложения добавляем новой строкой app_name = <App_name>Config.name, где <App_name>Config импортируем из apps.py приложения, и дописываем в pathы nameы в формате: urlpatterns = [path('', index, name='index')]
+3. В html прописываем ссылки в формате тегов: href='{% url '<app_name>:index' %}'
+
+**Кастомные теги**
