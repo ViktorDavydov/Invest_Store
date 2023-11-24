@@ -107,6 +107,7 @@ class Command(BaseCommand):
 8. Конструкция if в <блоке кода>:
 
 {% if object.is_active %} - используем свойство 
+
   {{ object|title }}
 {% else %}
   <span class='text-muted'>{{ object|title }}</span>
