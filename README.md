@@ -1,3 +1,5 @@
+---19.2---
+
 **Создание приложения Django**
 1. django-admin startproject config . 
 2. python manage.py startapp main
@@ -14,6 +16,8 @@
 1. Прописываем в index.html защиту ВАЖНО! {% csrf_token %}, <form method="post"> и формы ввода
 2. В контроллере прописываем логику if request.method == "POST": name = request.POST.get('name') и тд.
 
+
+---20.1---
 
 ORM
 
@@ -81,3 +85,6 @@ class Command(BaseCommand):
 3. Создаем пустой список для заполнения <model_name>_for_create = [] и прописываем цикл for <model_name>_item in <model_name>_list:
 4. В цикле пишем <model_name>_for_create.append(<Model_name>(**<model_name>_item))
 5. Вне цикла пишем <Model_name>.objects.bulk_create(<model_name>_for_create)
+
+
+
