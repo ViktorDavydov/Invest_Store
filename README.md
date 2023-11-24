@@ -106,11 +106,10 @@ class Command(BaseCommand):
 7. Для того чтобы все слова начинались с большой буквы делаем пайп: {{ object|title }}
 8. Конструкция if в <блоке кода>:
 
-{% if object.is_active %} - используем свойство 
-
-  {{ object|title }}
-{% else %}
-  <span class='text-muted'>{{ object|title }}</span>
+{% if object.is_active %} - используем свойство  
+  {{ object|title }}  
+{% else %}  
+  <span class='text-muted'>{{ object|title }}</span>  
 {% endif %}
 
 
