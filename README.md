@@ -121,6 +121,6 @@ class Command(BaseCommand):
 Для того чтобы правильно сделать ссылки в меню в html
 1. В config/url.py в path('', include('<app_name>.urls')) добавляем namespace='<app_name>' -> path('', include('<app_name>.urls', namespace='<app_name>'))
 2. В урлы приложения добавляем новой строкой app_name = <App_name>Config.name, где <App_name>Config импортируем из apps.py приложения, и дописываем в pathы nameы в формате: urlpatterns = [path('', index, name='index')]
-3. В html прописываем ссылки в формате тегов: href='{% url '<app_name>:index' %}
+3. В html прописываем ссылки в формате тегов: href='{% url '<app_name>:index' %}'
 
 **Кастомные теги**
