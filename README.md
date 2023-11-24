@@ -106,12 +106,21 @@ class Command(BaseCommand):
 7. Для того чтобы все слова начинались с большой буквы делаем пайп: {{ object|title }}
 8. Конструкция if в <блоке кода>:
 
-{% if object.is_active %} - используем свойство  
+{% if object.is_active %} - используем поле модели is_active как свойство и можем его сравнивать и проверять любые условия   
     {{ object|title }}  
 {% else %}  
-    <span class='text-muted'>{{ object|title }}</span>  
+    <span class='text-muted'>{{ object|title }}</span> если не is_active, то делаем текст "не активным"  
 {% endif %}
 
+**Подшаблоны и базовые шаблоны**
+1. Для выделения подшаблона, необходимо сделать его отдельным html. Например, contact.html (не забываем добавить в урлы)
+2. Для разделения на базовый шаблон (создается base.html) и подшаблон, необходимо в базовом в месте вставки подшаблона описать контсрукцию {% block block_name %}{% endblock %}, а в подшаблоне в самом начале {% extends '<app_name>/base.html'} {% block block_name %}, и закрыть в самом конце {% endblock %}
+3. Все подшаблоны складываются в директорию includes в папке templates, называются с приставкой "inc_" и оформляются тем же html файлом. Вставляются в base.html коснтрукцией {% include "<app_name>/includes/inc_....html" %}
 
+**Правильная маршрутизация**  
+Для того чтобы правильно сделать ссылки в меню в html
+1. В config/url.py в path('', include('<app_name>.urls')) добавляем namespace='<app_name>' -> path('', include('<app_name>.urls', namespace='<app_name>'))
+2. В урлы приложения добавляем новой строкой app_name = <App_name>Config.name, где <App_name>Config импортируем из apps.py приложения, и дописываем в pathы nameы в формате: urlpatterns = [path('', index, name='index')]
+3. В html прописываем ссылки в формате тегов: href='{% url '<app_name>:index' %}
 
-
+**Кастомные теги**
