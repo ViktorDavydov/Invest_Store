@@ -56,18 +56,12 @@ def add_product(request):
         'category_list': category_list
     }
     if request.method == "POST":
-
-        product_information = {
-            "id": 14,
-            "product_name": request.POST.get('name'),
-            "product_description": request.POST.get('description'),
-            "category": request.POST.get('category'),
-            "preview": request.POST.get('preview'),
-            "price": request.POST.get('price'),
-            "create_date": "2000-01-01",
-            "final_change_date": "2023-11-25"
-        }
-        # products_for_create = [Product(**product_information)]
-        # Product.objects.bulk_create(products_for_create)
-        print(product_information)
+        product_inf = Product(product_name=request.POST.get('name'),
+                              product_description=request.POST.get('description'),
+                              category=Category.objects.get(category_name=request.POST.get('category')),
+                              preview=request.POST.get('preview'),
+                              price=request.POST.get('price'),
+                              create_date=request.POST.get('create_date'),
+                              final_change_date=request.POST.get('final_change_date'))
+        product_inf.save()
     return render(request, 'catalog/add_product.html', context)
