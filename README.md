@@ -125,8 +125,6 @@ class Command(BaseCommand):
 
 **Кастомные теги**
 
-
-
 **FBV/CBV**
 Реализуют функционал CRUD - create, read, update, delete
 FBV - function based view:  
