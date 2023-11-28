@@ -156,19 +156,19 @@ class StudentListView(ListView):
 2. Для Дженериков важно, чтобы шаблон, с которым работает дженерик лежал в нашей папке templates и назывался '<app_name>/<model>_form.html', '<app_name>/<model>_detail.html' для CreateView, DetailView; '<app_name>/<model>_list.html' для ListView и тд.
 
 **Создание моделей**
-1. CreateView - для форм создания: Доп указываем поля для создания fields = ('first','second',) и ссылку для перенаправления после успешного создания success_url = reverse_lazy('main:index')
+1. CreateView - для форм создания: Доп указываем поля для создания fields = ('first','second',) и ссылку для перенаправления после успешного создания success_url = reverse_lazy('main:index') (from django.urls import reverse_lazy)
 
 **Методы класса**
-1. те, которые отвечают за получение данных:  
+1. те, которые отвечают за получение данных - основная логика - от контроллера к шаблону:  
 get_queryset() — получение запроса для формирования данных, используется в каждом контроллере.  
 get_context_data() — получение контекста для формирования ответа, который будет рендериться из шаблона, используется в каждом контроллере.  
 get_paginate_by() — получение количества записей для постраничного вывода, используется только в контроллере ListView.  
 
-Для этих методов необходимо сначала вызвать родительский тот же метод queryset = super()._get_queryset(*args, **kwargs)_, затем определить функционал 
+Для этих методов def get_queryset(self, *args, **kwargs):  необходимо сначала вызвать родительский тот же метод queryset = super()._get_queryset(*args, **kwargs)_,  затем определить функционал queryset = queryset.filter(is_active=True),  в конце вернуть результат return queryset.
 
-3. те, которые отвечают за обработку запроса:  
+3. те, которые отвечают за обработку запроса - основная логика - от пользователя к контроллеру:  
 post() — обработка входящего POST-запроса, используется в контроллерах CreateView или DeleteView.  
 form_valid() — обработка валидации формы, используется в контроллерах CreateView и UpdateView.  
 form_invalid() — обработка невалидной формы, используется в контроллерах CreateView и UpdateView.
 
-
+Для этих методов def form_valid(self, form):  сначала реализуем функционал if form.is_valid():  new_student = form.save()  new_student.personal_manager = self.request.user  new_student.save()  и только в итоге вызываем родительский метод return super().form_valid(form)
