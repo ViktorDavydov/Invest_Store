@@ -22,14 +22,14 @@
                     <table class="table table-striped">
                         <tr>
                             <td class="w-25">Имя</td>
-                            {% for i in all_contacts %}
-                            <td>{{i.contact_name}}</td>
+                            {% for object in object_list %}
+                            <td>{{object.contact_name}}</td>
                             {% endfor %}
                         </tr>
                         <tr>
                             <td class="w-25">Почта</td>
-                            {% for i in all_contacts %}
-                            <td>{{i.contact_email}}</td>
+                            {% for object in all_contacts %}
+                            <td>{{object.object_list}}</td>
                             {% endfor %}
                         </tr>
                     </table>
@@ -45,6 +45,7 @@
                 <div class="card-body">
                     <form method="post" action="" class="form-floating">
                         {% csrf_token %}
+                        {{ form }}
                         <div class="mb-3">
                             <label for="name">Имя</label>
                             <input type="text" name="name" class="form-control" id="name"

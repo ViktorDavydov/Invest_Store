@@ -7,21 +7,21 @@
 </div>
 <div class="container">
     <div class="row text-center">
-        {% for product in products %}
+        {% for object in object_list %}
         <div class="col-4">
             <div class="card mb-4 box-shadow text-bg-dark">
                 <div class="card-header">
-                    <h4 class="my-0 font-weight-normal">{{ product }}</h4>
+                    <h4 class="my-0 font-weight-normal">{{ object }}</h4>
                 </div>
                 <div class="card-body">
-                    <h1 class="card-title pricing-card-title">{{ product.price }} ₽</h1>
+                    <h1 class="card-title pricing-card-title">{{ object.price }} ₽</h1>
                     <ul class="list-unstyled mt-3 mb-4 text-start m-3">
-                        <li>Описание: {{ product.product_description|truncatechars:100 }}</li>
-                        <li>Категория: {{ product.category }}</li>
-                        <li>Дата последней котировки: {{ product.final_change_date }}</li>
+                        <li>Описание: {{ object.product_description|truncatechars:100 }}</li>
+                        <li>Категория: {{ object.category }}</li>
+                        <li>Дата последней котировки: {{ object.final_change_date }}</li>
 
                     </ul>
-                    <a href="/product/{{product.pk}}"
+                    <a href="/view/{{object.pk}}"
                        class="btn btn-lg btn-block btn-outline-warning" role="button">Перейти</a>
                 </div>
             </div>
@@ -29,25 +29,25 @@
         {% endfor %}
         <nav class="mt-4 border-top pt-4 pb-3">
             <ul class="pagination justify-content-center">
-            {% if products.has_previous %}
+            {% if page_obj.has_previous %}
                 <li class="page-item">
-                    <a class="page-link text-warning" href="?page={{ products.previous_page_number }}">Предыдущая</a>
+                    <a class="page-link text-warning" href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
                 </li>
             {% else %}
                 <li class="page-item disabled">
                     <a class="page-link" href="#">Предыдущая</a>
                 </li>
             {% endif %}
-            {% for page in products.paginator.page_range %}
-                {% if products.number == page %}
+            {% for page in page_obj.paginator.page_range %}
+                {% if page_obj.number == page %}
                     <li class="page-item"><a class="page-link text-bg-warning" href="#">{{ page }}</a></li>
-                {% elif page >= products.number|add:-4 and page <= products.number|add:4 %}
+                {% elif page >= page_obj.number|add:-4 and page <= page_obj.number|add:4 %}
                     <li class="page-item"><a class="page-link text-warning-emphasis" href="?page={{ page }}">{{ page }}</a></li>
                 {% endif %}
             {% endfor %}
-            {% if products.has_next %}
+            {% if page_obj.has_next %}
                 <li class="page-item">
-                    <a class="page-link text-warning" href="?page={{ products.next_page_number }}">Предыдущая</a>
+                    <a class="page-link text-warning" href="?page={{ page_obj.next_page_number }}">Предыдущая</a>
                 </li>
             {% else %}
                 <li class="page-item disabled">
