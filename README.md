@@ -124,3 +124,18 @@ class Command(BaseCommand):
 3. В html прописываем ссылки в формате тегов: href='{% url '<app_name>:index' %}'
 
 **Кастомные теги**
+
+
+
+**FBV/CBV**
+Реализуют функционал CRUD - create, read, update, delete
+FBV - function based view:  
+def student(request):  
+    context = {  
+        'object_list': Student.objects.all()
+    }  
+    return render(request, 'students/student_list.html', context)  
+
+CBV - class based view:  
+class StudentListView(ListView):  
+    model = Student  
