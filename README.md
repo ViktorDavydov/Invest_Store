@@ -125,15 +125,46 @@ class Command(BaseCommand):
 
 **Кастомные теги**
 
+
+---21.1---
+
 **FBV/CBV**
 Реализуют функционал CRUD - create, read, update, delete
-FBV - function based view:  
+FBV - function based view: более информативный, но повторяет много кода (DRY)  
 def student(request):  
     context = {  
         'object_list': Student.objects.all()
     }  
     return render(request, 'students/student_list.html', context)  
 
-CBV - class based view:  
+CBV - class based view: более модульный, полностью оттестирован, но много процессов "под капотом"  
 class StudentListView(ListView):  
     model = Student  
+
+
+**Перевод FBV в CBV**
+1. Переводятся контроллеры CRUD функциональности
+2. Импорт из django.view.generic import ListView, DetailView.
+3. index преобразуем в class <Model_name>ListView(ListView)/<Model_name>DetailView(DetailView):
+  model = <Model_name>
+  template = '<app_name>.index.html'/'<app_name>.student_detail.html'
+5. В урлах из views.py импортируем <Model_name>ListView и в path меняем index на <Model_name>ListView.as.view()
+
+
+**Generics**
+1. Дженерики - базовые классы, описывающие базовое поведение контролеров для механизма CRUD (CreateView, DetailView  и тд)
+2. Для Дженериков важно, чтобы шаблон, с которым работает дженерик лежал в нашей папке templates и назывался '<app_name>/<model>_form.html', '<app_name>/<model>_detail.html' для CreateView, DetailView; '<app_name>/<model>_list.html' для ListView и тд.
+
+**Создание моделей**
+1. CreateView - для форм создания: Доп указываем поля для создания fields = ('first','second',) и ссылку для перенаправления после успешного создания success_url = reverse_lazy('main:index')
+
+**Методы класса**
+1. те, которые отвечают за получение данных;
+get_queryset() — получение запроса для формирования данных, используется в каждом контроллере.  
+get_context_data() — получение контекста для формирования ответа, который будет рендериться из шаблона, используется в каждом контроллере.  
+get_paginate_by() — получение количества записей для постраничного вывода, используется только в контроллере ListView.  
+
+2. те, которые отвечают за обработку запроса.
+post() — обработка входящего POST-запроса, используется в контроллерах CreateView или DeleteView.  
+form_valid() — обработка валидации формы, используется в контроллерах CreateView и UpdateView.  
+form_invalid() — обработка невалидной формы, используется в контроллерах CreateView и UpdateView.  
