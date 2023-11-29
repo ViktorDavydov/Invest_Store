@@ -4,7 +4,7 @@ import json
 from django.urls import reverse_lazy
 from django.views.generic import DetailView, ListView, CreateView
 
-from catalog.models import Product, Contacts, Category
+from catalog.models import Product, Contacts, Category, Blog
 
 
 class ProductListView(ListView):
@@ -91,6 +91,8 @@ class ProductCreateView(CreateView):
         'final_change_date'
     )
     success_url = reverse_lazy('catalog:list')
+
+
 # def add_product(request):
 #     category_list = Category.objects.all()
 #     context = {
@@ -107,3 +109,21 @@ class ProductCreateView(CreateView):
 #                               final_change_date=request.POST.get('final_change_date'))
 #         product_inf.save()
 #     return render(request, 'catalog/product_form.html', context)
+
+class BlogListView(ListView):
+    model = Blog
+    paginate_by = 6
+
+
+class BlogCreateView(CreateView):
+    model = Blog
+    fields = (
+        'article_name',
+        'slug',
+        'contents',
+        'preview',
+        'create_date',
+        'publication_date',
+        'views_count'
+    )
+    success_url = reverse_lazy('catalog:blog')

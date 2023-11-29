@@ -48,3 +48,23 @@ class Contacts(models.Model):
         verbose_name = 'контакт'
         verbose_name_plural = 'контакты'
         ordering = ('contact_name',)
+
+
+class Blog(models.Model):
+    article_name = models.CharField(max_length=30, verbose_name='заголовок')
+    slug = models.CharField(max_length=30, verbose_name='slug')
+    contents = models.TextField(verbose_name='содержимое')
+    preview = models.ImageField(upload_to='products/', verbose_name='превью', **NULLABLE)
+    create_date = models.DateField(auto_now=False, auto_now_add=False,
+                                   verbose_name='дата создания')
+    publication_date = models.DateField(auto_now=False, auto_now_add=False,
+                                        verbose_name='дата публикации')
+    views_count = models.IntegerField(verbose_name='количество просмотров')
+
+    def __str__(self):
+        return f'{self.article_name} - {self.slug}'
+
+    class Meta:
+        verbose_name = 'блог'
+        verbose_name_plural = 'блоги'
+        ordering = ('article_name',)
