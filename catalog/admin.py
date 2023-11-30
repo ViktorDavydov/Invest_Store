@@ -22,4 +22,4 @@ class ContactsAdmin(admin.ModelAdmin):
 
 @admin.register(Blog)
 class ContactsAdmin(admin.ModelAdmin):
-    list_display = ('article_name', 'slug',)
+    list_display = ('article_name', 'slug', 'is_published',)

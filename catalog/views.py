@@ -1,8 +1,9 @@
-from django.shortcuts import render
 import json
 
-from django.urls import reverse_lazy
-from django.views.generic import DetailView, ListView, CreateView
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse_lazy, reverse
+from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
+from pytils.translit import slugify
 
 from catalog.models import Product, Contacts, Category, Blog
 
@@ -114,16 +115,57 @@ class BlogListView(ListView):
     model = Blog
     paginate_by = 6
 
+    def get_queryset(self, *args, **kwargs):
+        queryset = super().get_queryset(*args, **kwargs)
+        queryset = queryset.filter(is_published=True)
+        return queryset
+
 
 class BlogCreateView(CreateView):
     model = Blog
     fields = (
         'article_name',
-        'slug',
         'contents',
         'preview',
         'create_date',
         'publication_date',
-        'views_count'
     )
+    success_url = reverse_lazy('catalog:blog')
+
+    def form_valid(self, form):
+        if form.is_valid():
+            new_art = form.save()
+            new_art.slug = slugify(new_art.article_name)
+            new_art.save()
+        return super().form_valid(form)
+
+
+class BlogUpdateView(UpdateView):
+    model = Blog
+    fields = (
+        'article_name',
+        'contents',
+        'preview',
+        'create_date',
+        'publication_date',
+    )
+
+    # success_url = reverse_lazy('catalog:blog')
+
+    def get_success_url(self):
+        return reverse('catalog:article', args=[self.kwargs.get('pk')])
+
+
+class BlogDetailView(DetailView):
+    model = Blog
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object()
+        self.object.views_count += 1
+        self.object.save()
+        return self.object
+
+
+class BlogDeleteView(DeleteView):
+    model = Blog
     success_url = reverse_lazy('catalog:blog')
