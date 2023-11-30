@@ -1,11 +1,13 @@
 import json
 
+from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 from pytils.translit import slugify
 
 from catalog.models import Product, Contacts, Category, Blog
+from config import settings
 
 
 class ProductListView(ListView):
@@ -163,6 +165,14 @@ class BlogDetailView(DetailView):
         self.object = super().get_object()
         self.object.views_count += 1
         self.object.save()
+        if self.object.views_count == 115:
+            send_mail(
+                subject='Поздравляем Вас!',
+                message='Поздравляем! Вашу статью посмотрели уже 100 человек! Супер!',
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=['cerbin94@gmail.com'],
+                fail_silently=False
+            )
         return self.object
 
 
