@@ -24,11 +24,11 @@
 
                     </ul>
                     <div class="btn-group">
-                        <a href="{% url 'catalog:article' object.pk %}" type="button"
+                        <a href="{% url 'catalog:article' object.slug %}" type="button"
                            class="btn btn-md btn-outline-warning">Перейти</a>
-                        <a href="{% url 'catalog:update_article' object.pk %}" type="button"
+                        <a href="{% url 'catalog:update_article' object.slug %}" type="button"
                            class="btn btn-md btn-outline-warning">Редактировать</a>
-                        <a href="{% url 'catalog:delete_article' object.pk %}" type="button"
+                        <a href="{% url 'catalog:delete_article' object.slug %}" type="button"
                            class="btn btn-md btn-outline-danger">Удалить</a>
                     </div>
                 </div>

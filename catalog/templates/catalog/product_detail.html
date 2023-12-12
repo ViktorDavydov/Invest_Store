@@ -9,7 +9,8 @@
         <div class="col-12">
             <div class="card mb-4 box-shadow text-bg-dark">
                 <div class="card-header">
-                    <img src="{% mediapath object.preview %}" class="card-img-top object-fit-none" style="height:200px;"/>
+                    <img src="{% mediapath object.preview %}" class="card-img-top object-fit-none"
+                         style="height:200px;"/>
                 </div>
                 <div class="card-body">
                     <h4 class="my-0 font-weight-normal">{{ object }}</h4>
@@ -18,9 +19,20 @@
                         <li>Описание: {{ object.product_description }}</li>
                         <li>Категория: {{ object.category }}</li>
                         <li>Дата последней котировки: {{ object.final_change_date }}</li>
+                        {% for version in object.versions.all %}
+                            {% if version.is_active %}
+                                <li>Номер версии: {{ version.version_number }}</li>
+                            {% endif %}
+                        {% endfor %}
                     </ul>
                     <button type="button" class="btn btn-lg btn-block btn-outline-warning">Купить
                     </button>
+                    <a href="{% url 'catalog:edit_product' object.pk %}"
+                       class="btn btn-lg btn-block btn-outline-info"
+                       role="button">Редактировать</a>
+                    <a href="{% url 'catalog:delete_product' object.pk %}"
+                       class="btn btn-lg btn-block btn-outline-danger"
+                       role="button">Удалить</a>
                 </div>
             </div>
         </div>

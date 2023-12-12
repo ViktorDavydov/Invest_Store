@@ -1,40 +1,15 @@
 import json
 
 from django.core.mail import send_mail
-from django.shortcuts import get_object_or_404, redirect
+from django.forms import inlineformset_factory
 from django.urls import reverse_lazy, reverse
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 from pytils.translit import slugify
 
-from catalog.models import Product, Contacts, Category, Blog
+from catalog.forms import ProductForm, VersionForm
+from catalog.models import Product, Contacts, Category, Blog, Version
 from config import settings
 
-
-class ProductListView(ListView):
-    model = Product
-    paginate_by = 3
-
-
-# def index(request):
-#     objects_list = Product.objects.all()
-#     # context = {
-#     #     'objects_list': objects_list,
-#     #     'title': 'Каталог'
-#     # }
-#     paginator = Paginator(objects_list, 3)
-#     page = request.GET.get('page')
-#     try:
-#         products = paginator.page(page)
-#     except PageNotAnInteger:
-#         products = paginator.page(1)
-#     except EmptyPage:
-#         products = paginator.page(paginator.num_pages)
-#
-#     temps = {
-#         'products': products
-#     }
-#
-#     return render(request, 'catalog/product_list.html', temps)
 
 class ContactsCreateView(CreateView):
     model = Contacts
@@ -55,63 +30,49 @@ class ContactsCreateView(CreateView):
         return super().form_valid(form)
 
 
-# def contacts(request):
-#     all_contacts = Contacts.objects.all()
-#     context = {
-#         'title': 'Контакты'
-#     }
-#     if request.method == 'POST':
-#         contact_dict = {
-#             "Имя": request.POST.get('name'),
-#             "Почта": request.POST.get('email'),
-#             "Сообщение": request.POST.get('message')
-#         }
-#         with open("contacts.json", 'a', encoding='UTF-8') as f:
-#             json.dump(contact_dict, f, indent=2, ensure_ascii=False)
-#     return render(request, 'catalog/contacts_form.html', locals())
+class ProductListView(ListView):
+    model = Product
+    paginate_by = 3
 
 
 class ProductDetailView(DetailView):
     model = Product
 
 
-# def product(request, pk):
-#     chosen_product = Product.objects.get(pk=pk)
-#     context = {
-#         'chosen_product': chosen_product,
-#     }
-#     return render(request, 'catalog/product_detail.html', context)
-
 class ProductCreateView(CreateView):
     model = Product
-    fields = (
-        'product_name',
-        'product_description',
-        'category',
-        'preview',
-        'price',
-        'create_date',
-        'final_change_date'
-    )
+    form_class = ProductForm
     success_url = reverse_lazy('catalog:list')
 
 
-# def add_product(request):
-#     category_list = Category.objects.all()
-#     context = {
-#         'category_list': category_list
-#     }
-#     if request.method == "POST":
-#         product_inf = Product(product_name=request.POST.get('name'),
-#                               product_description=request.POST.get('description'),
-#                               category=Category.objects.get(
-#                                   category_name=request.POST.get('category')),
-#                               preview=request.POST.get('preview'),
-#                               price=request.POST.get('price'),
-#                               create_date=request.POST.get('create_date'),
-#                               final_change_date=request.POST.get('final_change_date'))
-#         product_inf.save()
-#     return render(request, 'catalog/product_form.html', context)
+class ProductUpdateView(UpdateView):
+    model = Product
+    form_class = ProductForm
+    success_url = reverse_lazy('catalog:list')
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        VersionFormset = inlineformset_factory(Product, Version, form=VersionForm, extra=1)
+        if self.request.method == 'POST':
+            formset = VersionFormset(self.request.POST, instance=self.object)
+        else:
+            formset = VersionFormset(instance=self.object)
+        context_data['formset'] = formset
+        return context_data
+
+    def form_valid(self, form):
+        formset = self.get_context_data()['formset']
+        self.object = form.save()
+        if formset.is_valid():
+            formset.instance = self.object
+            formset.save()
+        return super().form_valid(form)
+
+
+class ProductDeleteView(DeleteView):
+    model = Product
+    success_url = reverse_lazy('catalog:list')
+
 
 class BlogListView(ListView):
     model = Blog
@@ -152,10 +113,8 @@ class BlogUpdateView(UpdateView):
         'publication_date',
     )
 
-    # success_url = reverse_lazy('catalog:blog')
-
     def get_success_url(self):
-        return reverse('catalog:article', args=[self.kwargs.get('pk')])
+        return reverse('catalog:article', args=[self.kwargs.get('slug')])
 
 
 class BlogDetailView(DetailView):
@@ -165,7 +124,7 @@ class BlogDetailView(DetailView):
         self.object = super().get_object()
         self.object.views_count += 1
         self.object.save()
-        if self.object.views_count == 115:
+        if self.object.views_count == 15:
             send_mail(
                 subject='Поздравляем Вас!',
                 message='Поздравляем! Вашу статью посмотрели уже 100 человек! Супер!',

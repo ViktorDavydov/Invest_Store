@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 NULLABLE = {'blank': True, 'null': True}
 
@@ -37,6 +38,22 @@ class Product(models.Model):
         ordering = ('product_name',)
 
 
+class Version(models.Model):
+    prod = models.ForeignKey(Product, on_delete=models.CASCADE,
+                             verbose_name='наименование продукта', related_name='versions')
+    version_number = models.IntegerField(verbose_name='версия')
+    version_name = models.CharField(max_length=50, verbose_name='название версии')
+    is_active = models.BooleanField(default=False, verbose_name='активна')
+
+    def __str__(self):
+        return f"{self.prod} - {self.version_number}"
+
+    class Meta:
+        verbose_name = 'версия'
+        verbose_name_plural = 'версии'
+        ordering = ('prod',)
+
+
 class Contacts(models.Model):
     contact_name = models.CharField(max_length=30, verbose_name='имя контакта')
     contact_email = models.CharField(max_length=30, verbose_name='email контакта')
@@ -69,3 +86,6 @@ class Blog(models.Model):
         verbose_name = 'блог'
         verbose_name_plural = 'блоги'
         ordering = ('article_name',)
+
+    def get_absolute_url(self):
+        return reverse('blog', kwargs={'post_slug': self.slug})

@@ -19,9 +19,13 @@
                         <li>Описание: {{ object.product_description|truncatechars:100 }}</li>
                         <li>Категория: {{ object.category }}</li>
                         <li>Дата последней котировки: {{ object.final_change_date }}</li>
-
+                        {% for version in object.versions.all %}
+                            {% if version.is_active %}
+                                <li>Номер версии: {{ version.version_number }}</li>
+                            {% endif %}
+                        {% endfor %}
                     </ul>
-                    <a href="/view/{{object.pk}}"
+                    <a href="{% url 'catalog:view' object.pk %}"
                        class="btn btn-lg btn-block btn-outline-warning" role="button">Перейти</a>
                 </div>
             </div>
