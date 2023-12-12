@@ -1,0 +1,73 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+<div class="container">
+    <br/>
+    <a class="btn btn-warning" href="{% url 'catalog:article_create' %}" role="button">Добавить
+        статью</a>
+</div>
+<div class="container">
+    <br/>
+    <div class="row">
+        {% for object in object_list %}
+        {% if object.is_published %}
+        <div class="col-4">
+            <div class="card mb-4 box-shadow text-bg-dark">
+                <div class="card-header">
+                    <h2 class="my-0 font-weight-normal">{{ object.article_name }}</h2>
+                </div>
+                <div class="card-body">
+                    <h6 class="card-title pricing-card-title">{{ object.contents|truncatechars:50 }}</h6>
+                    <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+                        <li>Дата создания: {{ object.create_date }}</li>
+                        <li>Дата публикации: {{ object.publication_date }}</li>
+                        <li>Просмотры: {{ object.views_count }}</li>
+
+                    </ul>
+                    <div class="btn-group">
+                        <a href="{% url 'catalog:article' object.slug %}" type="button"
+                           class="btn btn-md btn-outline-warning">Перейти</a>
+                        <a href="{% url 'catalog:update_article' object.slug %}" type="button"
+                           class="btn btn-md btn-outline-warning">Редактировать</a>
+                        <a href="{% url 'catalog:delete_article' object.slug %}" type="button"
+                           class="btn btn-md btn-outline-danger">Удалить</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        <nav class="mt-4 border-top pt-4 pb-3">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link text-warning"
+                       href="?page={{ page_obj.previous_page_number }}">Предыдущая</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">Предыдущая</a>
+                </li>
+                {% endif %}
+                {% for page in page_obj.paginator.page_range %}
+                {% if page_obj.number == page %}
+                <li class="page-item"><a class="page-link text-bg-warning" href="#">{{ page }}</a>
+                </li>
+                {% elif page >= page_obj.number|add:-4 and page <= page_obj.number|add:4 %}
+                <li class="page-item"><a class="page-link text-warning-emphasis"
+                                         href="?page={{ page }}">{{ page }}</a></li>
+                {% endif %}
+                {% endfor %}
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link text-warning" href="?page={{ page_obj.next_page_number }}">Следующая</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">Следующая</a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+{% endblock %}
