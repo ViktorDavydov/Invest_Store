@@ -66,6 +66,9 @@ class ProductUpdateView(UpdateView):
         if formset.is_valid():
             formset.instance = self.object
             formset.save()
+        else:
+            form.add_error(None, 'Ошибка версии')
+            return self.form_invalid(form)
         return super().form_valid(form)
 
 

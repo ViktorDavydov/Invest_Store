@@ -38,12 +38,13 @@ class ProductForm(StyleFormMixin, forms.ModelForm):
 class VersionForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Product
-        fields = '__all__'
+        exclude = ('prod', )
 
     def clean_prod(self):
         cleaned_data = super().clean()
-        product = self.instance.product
+        product = self.instance.prod
         is_active = cleaned_data.get('is_active')
         if is_active and product.versions.filter(is_active=True).exclude(
                 id=self.instance.id).exists():
             raise forms.ValidationError('Только одна версия может быть активной')
+        return cleaned_data
