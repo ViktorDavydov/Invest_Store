@@ -5,7 +5,7 @@
 </div>
 <div class="col-12" align="center">
     <form method="post" action="" class="row" enctype="multipart/form-data">
-        <div class="col-8" >
+        <div class="col-8">
             <div class="card mb-4 box-shadow text-bg-dark">
                 <div class="card-header">
                     <h4 class="my-0 font-weight-normal">Заполните следующие данные</h4>
@@ -24,13 +24,22 @@
                 <div class="card-header">
                     <h4 class="my-0 font-weight-normal">Версия</h4>
                 </div>
+                {% if formset.non_form_errors %}
+                <div class="text-center">
+                    <div class="text-primary-emphasis bg-warning border border-warning rounded-3">
+                        {% for error in formset.non_form_errors %}
+                        <h6>{{ error }}</h6>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
                 <div class="card-body">
                     {{ formset.management_form }}
                     {% for form in formset.forms %}
-                        {{ form.as_p }}
-                        {% if not forloop.last %}
-                            <hr>
-                        {% endif %}
+                    {{ form.as_p }}
+                    {% if not forloop.last %}
+                    <hr>
+                    {% endif %}
                     {% endfor %}
                 </div>
             </div>

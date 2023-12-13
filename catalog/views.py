@@ -6,7 +6,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 from pytils.translit import slugify
 
-from catalog.forms import ProductForm, VersionForm
+from catalog.forms import ProductForm, VersionForm, VersionBaseInLineFormSet
 from catalog.models import Product, Contacts, Category, Blog, Version
 from config import settings
 
@@ -52,7 +52,8 @@ class ProductUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        VersionFormset = inlineformset_factory(Product, Version, form=VersionForm, extra=1)
+        VersionFormset = inlineformset_factory(Product, Version, form=VersionForm, extra=1,
+                                               formset=VersionBaseInLineFormSet)
         if self.request.method == 'POST':
             formset = VersionFormset(self.request.POST, instance=self.object)
         else:
@@ -62,13 +63,13 @@ class ProductUpdateView(UpdateView):
 
     def form_valid(self, form):
         formset = self.get_context_data()['formset']
-        self.object = form.save()
-        if formset.is_valid():
-            formset.instance = self.object
-            formset.save()
-        else:
-            form.add_error(None, 'Ошибка версии')
-            return self.form_invalid(form)
+        if form.is_valid():
+            self.object = form.save()
+            if formset.is_valid():
+                formset.instance = self.object
+                formset.save()
+            else:
+                return self.form_invalid(form)
         return super().form_valid(form)
 
 
