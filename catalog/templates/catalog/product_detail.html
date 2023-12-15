@@ -20,13 +20,16 @@
                         <li>Категория: {{ object.category }}</li>
                         <li>Дата последней котировки: {{ object.final_change_date }}</li>
                         {% for version in object.versions.all %}
-                            {% if version.is_active %}
-                                <li>Номер версии: {{ version.version_number }}</li>
-                            {% endif %}
+                        {% if version.is_active %}
+                        <li>Номер версии: {{ version.version_number }}</li>
+                        {% endif %}
                         {% endfor %}
                     </ul>
                     <button type="button" class="btn btn-lg btn-block btn-outline-warning">Купить
                     </button>
+                </div>
+                {% if user.is_authenticated %}
+                <div class="card-footer">
                     <a href="{% url 'catalog:edit_product' object.pk %}"
                        class="btn btn-lg btn-block btn-outline-info"
                        role="button">Редактировать</a>
@@ -34,6 +37,7 @@
                        class="btn btn-lg btn-block btn-outline-danger"
                        role="button">Удалить</a>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>

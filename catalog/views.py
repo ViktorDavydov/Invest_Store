@@ -1,5 +1,6 @@
 import json
 
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.core.mail import send_mail
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy, reverse
@@ -44,6 +45,12 @@ class ProductCreateView(CreateView):
     form_class = ProductForm
     success_url = reverse_lazy('catalog:list')
 
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.owner = self.request.user
+        self.object.save()
+        return super().form_valid(form)
+
 
 class ProductUpdateView(UpdateView):
     model = Product
@@ -71,6 +78,11 @@ class ProductUpdateView(UpdateView):
             else:
                 return self.form_invalid(form)
         return super().form_valid(form)
+
+    # def test_func(self):
+    #     if self.request.user.is_staff:
+    #         return False
+    #     return self.request.user == Product.objects.get(pk=self.kwargs['pk']).owner
 
 
 class ProductDeleteView(DeleteView):
@@ -128,7 +140,7 @@ class BlogDetailView(DetailView):
         self.object = super().get_object()
         self.object.views_count += 1
         self.object.save()
-        if self.object.views_count == 15:
+        if self.object.views_count == 20:
             send_mail(
                 subject='Поздравляем Вас!',
                 message='Поздравляем! Вашу статью посмотрели уже 100 человек! Супер!',
