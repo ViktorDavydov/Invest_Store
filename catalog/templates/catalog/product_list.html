@@ -24,6 +24,7 @@
                                 <li>Номер версии: {{ version.version_number }}</li>
                             {% endif %}
                         {% endfor %}
+                        <li>Пользователь: {{ object.owner|default:'Без пользователя' }}</li>
                     </ul>
                     <a href="{% url 'catalog:view' object.pk %}"
                        class="btn btn-lg btn-block btn-outline-warning" role="button">Перейти</a>

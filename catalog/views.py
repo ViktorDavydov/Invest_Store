@@ -1,12 +1,13 @@
 import json
 
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
 from django.core.mail import send_mail
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy, reverse
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 from pytils.translit import slugify
 
-from catalog.forms import ProductForm, VersionForm
+from catalog.forms import ProductForm, VersionForm, VersionBaseInLineFormSet
 from catalog.models import Product, Contacts, Category, Blog, Version
 from config import settings
 
@@ -44,6 +45,12 @@ class ProductCreateView(CreateView):
     form_class = ProductForm
     success_url = reverse_lazy('catalog:list')
 
+    def form_valid(self, form):
+        self.object = form.save()
+        self.object.owner = self.request.user
+        self.object.save()
+        return super().form_valid(form)
+
 
 class ProductUpdateView(UpdateView):
     model = Product
@@ -52,7 +59,8 @@ class ProductUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        VersionFormset = inlineformset_factory(Product, Version, form=VersionForm, extra=1)
+        VersionFormset = inlineformset_factory(Product, Version, form=VersionForm, extra=1,
+                                               formset=VersionBaseInLineFormSet)
         if self.request.method == 'POST':
             formset = VersionFormset(self.request.POST, instance=self.object)
         else:
@@ -62,14 +70,19 @@ class ProductUpdateView(UpdateView):
 
     def form_valid(self, form):
         formset = self.get_context_data()['formset']
-        self.object = form.save()
-        if formset.is_valid():
-            formset.instance = self.object
-            formset.save()
-        else:
-            form.add_error(None, 'Ошибка версии')
-            return self.form_invalid(form)
+        if form.is_valid():
+            self.object = form.save()
+            if formset.is_valid():
+                formset.instance = self.object
+                formset.save()
+            else:
+                return self.form_invalid(form)
         return super().form_valid(form)
+
+    # def test_func(self):
+    #     if self.request.user.is_staff:
+    #         return False
+    #     return self.request.user == Product.objects.get(pk=self.kwargs['pk']).owner
 
 
 class ProductDeleteView(DeleteView):
@@ -127,7 +140,7 @@ class BlogDetailView(DetailView):
         self.object = super().get_object()
         self.object.views_count += 1
         self.object.save()
-        if self.object.views_count == 15:
+        if self.object.views_count == 20:
             send_mail(
                 subject='Поздравляем Вас!',
                 message='Поздравляем! Вашу статью посмотрели уже 100 человек! Супер!',

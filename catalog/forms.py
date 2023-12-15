@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import BaseInlineFormSet
 
 from catalog.models import Product
 
@@ -7,14 +8,16 @@ class StyleFormMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
-            field.widget.attrs['class'] = 'form-control'
+            if field_name == 'is_active' or field_name == 'is_published':
+                field.widget.attrs['class'] = 'form'
+            else:
+                field.widget.attrs['class'] = 'form-control'
 
 
 class ProductForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Product
-        fields = '__all__'
-        exclude = ('vers',)
+        exclude = ('owner',)
 
     def clean_product_name(self):
         cleaned_data = self.cleaned_data.get('product_name', )
@@ -38,13 +41,13 @@ class ProductForm(StyleFormMixin, forms.ModelForm):
 class VersionForm(StyleFormMixin, forms.ModelForm):
     class Meta:
         model = Product
-        exclude = ('prod', )
+        exclude = ('prod',)
 
-    def clean_prod(self):
-        cleaned_data = super().clean()
-        product = self.instance.prod
-        is_active = cleaned_data.get('is_active')
-        if is_active and product.versions.filter(is_active=True).exclude(
-                id=self.instance.id).exists():
-            raise forms.ValidationError('Только одна версия может быть активной')
-        return cleaned_data
+
+class VersionBaseInLineFormSet(BaseInlineFormSet):
+    def clean(self):
+        super().clean()
+        active_list = [form.cleaned_data['is_active'] for form in self.forms if
+                       'is_active' in form.cleaned_data]
+        if active_list.count(True) > 1:
+            raise forms.ValidationError('ОШИБКА! Только одна версия может быть активна')

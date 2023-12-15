@@ -1,5 +1,9 @@
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
+
+from users.models import User
+
 
 NULLABLE = {'blank': True, 'null': True}
 
@@ -28,6 +32,9 @@ class Product(models.Model):
                                    verbose_name='дата создания')
     final_change_date = models.DateField(auto_now=False, auto_now_add=False,
                                          verbose_name='дата последнего изменения')
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name='пользователь', on_delete=models.SET_NULL,
+                              **NULLABLE)
+    is_published = models.BooleanField(default=False, verbose_name='опубликовано')
 
     def __str__(self):
         return f"{self.product_name}"
