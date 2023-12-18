@@ -1,6 +1,7 @@
 import json
 
-from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin
+from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin, \
+    PermissionRequiredMixin
 from django.core.mail import send_mail
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy, reverse
@@ -35,12 +36,17 @@ class ProductListView(ListView):
     model = Product
     paginate_by = 3
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(is_published=True)
+        return queryset
+
 
 class ProductDetailView(DetailView):
     model = Product
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:list')
@@ -52,10 +58,11 @@ class ProductCreateView(CreateView):
         return super().form_valid(form)
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:list')
+    permission_required = 'catalog.change_product'
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
@@ -79,13 +86,13 @@ class ProductUpdateView(UpdateView):
                 return self.form_invalid(form)
         return super().form_valid(form)
 
-    # def test_func(self):
-    #     if self.request.user.is_staff:
-    #         return False
-    #     return self.request.user == Product.objects.get(pk=self.kwargs['pk']).owner
+    def test_func(self):
+        if self.request.user.is_staff:
+            return False
+        return self.request.user == Product.objects.get(pk=self.kwargs['pk']).owner
 
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('catalog:list')
 
@@ -100,7 +107,7 @@ class BlogListView(ListView):
         return queryset
 
 
-class BlogCreateView(CreateView):
+class BlogCreateView(LoginRequiredMixin, CreateView):
     model = Blog
     fields = (
         'article_name',
@@ -119,7 +126,7 @@ class BlogCreateView(CreateView):
         return super().form_valid(form)
 
 
-class BlogUpdateView(UpdateView):
+class BlogUpdateView(LoginRequiredMixin, UpdateView):
     model = Blog
     fields = (
         'article_name',
@@ -151,6 +158,6 @@ class BlogDetailView(DetailView):
         return self.object
 
 
-class BlogDeleteView(DeleteView):
+class BlogDeleteView(LoginRequiredMixin, DeleteView):
     model = Blog
     success_url = reverse_lazy('catalog:blog')
