@@ -8,7 +8,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 from pytils.translit import slugify
 
-from catalog.forms import ProductForm, VersionForm, VersionBaseInLineFormSet
+from catalog.forms import ProductForm, VersionForm, VersionBaseInLineFormSet, BlogForm
 from catalog.models import Product, Contacts, Category, Blog, Version
 from config import settings
 
@@ -87,9 +87,18 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         return super().form_valid(form)
 
     def test_func(self):
-        if self.request.user.is_staff:
-            return False
-        return self.request.user == Product.objects.get(pk=self.kwargs['pk']).owner
+        _user = self.request.user
+        _instance: Product = self.get_object()
+        custom_perms: tuple = (
+            'catalog_app.set_is_published',
+            'catalog_app.set_category',
+            'catalog_app.set_product_description',
+        )
+        if _user.is_superuser or _user == _instance.owner:
+            return True
+        elif _user.groups.filter(name='moderators') and _user.has_perms(custom_perms):
+            return True
+        return self.handle_no_permission()
 
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
@@ -109,13 +118,7 @@ class BlogListView(ListView):
 
 class BlogCreateView(LoginRequiredMixin, CreateView):
     model = Blog
-    fields = (
-        'article_name',
-        'contents',
-        'preview',
-        'create_date',
-        'publication_date',
-    )
+    form_class = BlogForm
     success_url = reverse_lazy('catalog:blog')
 
     def form_valid(self, form):
@@ -125,19 +128,27 @@ class BlogCreateView(LoginRequiredMixin, CreateView):
             new_art.save()
         return super().form_valid(form)
 
+    def test_func(self):
+        _user = self.request.user
+        _instance: Blog = self.get_object()
+        if _user.is_superuser or _user.groups.filter(name='content_manager'):
+            return True
+        return self.handle_no_permission()
+
 
 class BlogUpdateView(LoginRequiredMixin, UpdateView):
     model = Blog
-    fields = (
-        'article_name',
-        'contents',
-        'preview',
-        'create_date',
-        'publication_date',
-    )
+    form_class = BlogForm
 
     def get_success_url(self):
         return reverse('catalog:article', args=[self.kwargs.get('slug')])
+
+    def test_func(self):
+        _user = self.request.user
+        _instance: Blog = self.get_object()
+        if _user.is_superuser or _user.groups.filter(name='content_manager'):
+            return True
+        return self.handle_no_permission()
 
 
 class BlogDetailView(DetailView):
@@ -160,4 +171,5 @@ class BlogDetailView(DetailView):
 
 class BlogDeleteView(LoginRequiredMixin, DeleteView):
     model = Blog
+    form_class = BlogForm
     success_url = reverse_lazy('catalog:blog')
