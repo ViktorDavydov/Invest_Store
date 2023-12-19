@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import BaseInlineFormSet
 
-from catalog.models import Product
+from catalog.models import Product, Blog
 
 
 class StyleFormMixin:
@@ -51,3 +51,9 @@ class VersionBaseInLineFormSet(BaseInlineFormSet):
                        'is_active' in form.cleaned_data]
         if active_list.count(True) > 1:
             raise forms.ValidationError('ОШИБКА! Только одна версия может быть активна')
+
+
+class BlogForm(StyleFormMixin, forms.ModelForm):
+    class Meta:
+        model = Blog
+        exclude = ('slug', 'views_count')
