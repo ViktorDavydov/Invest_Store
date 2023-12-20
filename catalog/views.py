@@ -8,7 +8,8 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import DetailView, ListView, CreateView, UpdateView, DeleteView
 from pytils.translit import slugify
 
-from catalog.forms import ProductForm, VersionForm, VersionBaseInLineFormSet, BlogForm
+from catalog.forms import ProductForm, VersionForm, VersionBaseInLineFormSet, BlogForm, \
+    ModeratorForm
 from catalog.models import Product, Contacts, Category, Blog, Version
 from config import settings
 
@@ -86,6 +87,12 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
                 return self.form_invalid(form)
         return super().form_valid(form)
 
+    def get_form_class(self):
+        if self.request.user.is_staff and self.request.user.groups.filter(
+                name='moderator').exists():
+            return ModeratorForm
+        return ProductForm
+
     def test_func(self):
         _user = self.request.user
         _instance: Product = self.get_object()
@@ -96,7 +103,7 @@ class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         )
         if _user.is_superuser or _user == _instance.owner:
             return True
-        elif _user.groups.filter(name='moderators') and _user.has_perms(custom_perms):
+        elif _user.groups.filter(name='moderator') and _user.has_perms(custom_perms):
             return True
         return self.handle_no_permission()
 
