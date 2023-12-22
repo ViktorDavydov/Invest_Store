@@ -2,6 +2,7 @@ import json
 
 from django.contrib.auth.mixins import UserPassesTestMixin, LoginRequiredMixin, \
     PermissionRequiredMixin
+from django.core.cache import cache
 from django.core.mail import send_mail
 from django.forms import inlineformset_factory
 from django.urls import reverse_lazy, reverse
@@ -11,6 +12,7 @@ from pytils.translit import slugify
 from catalog.forms import ProductForm, VersionForm, VersionBaseInLineFormSet, BlogForm, \
     ModeratorForm
 from catalog.models import Product, Contacts, Category, Blog, Version
+from catalog.services import get_cached_category_for_product
 from config import settings
 
 
@@ -57,6 +59,11 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
         self.object.owner = self.request.user
         self.object.save()
         return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context_data = super().get_context_data(**kwargs)
+        context_data['category'] = get_cached_category_for_product()
+        return context_data
 
 
 class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
