@@ -1,0 +1,368 @@
+[
+  {
+    "model": "catalog.category",
+    "pk": 1,
+    "fields": {
+      "category_name": "Акции",
+      "category_description": "Акции крупнейших компаний"
+    }
+  },
+  {
+    "model": "catalog.category",
+    "pk": 2,
+    "fields": {
+      "category_name": "ПИФы",
+      "category_description": "Паевые инвестиционные фонды"
+    }
+  },
+  {
+    "model": "catalog.category",
+    "pk": 3,
+    "fields": {
+      "category_name": "Облигации",
+      "category_description": "Корпоративные облигации"
+    }
+  },
+  {
+    "model": "catalog.category",
+    "pk": 4,
+    "fields": {
+      "category_name": "БПИФ/ETF",
+      "category_description": "Биржевые паевые инвестиционные фонды"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 2,
+    "fields": {
+      "product_name": "Сбербанк",
+      "product_description": "Сбербанк",
+      "preview": "products/Сбер_DoGlPdg.jpg",
+      "category": 1,
+      "price": 283,
+      "create_date": "2000-01-01",
+      "final_change_date": "2023-11-21"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 3,
+    "fields": {
+      "product_name": "Лукойл",
+      "product_description": "Лукойл",
+      "preview": "products/002.jpg",
+      "category": 1,
+      "price": 7200,
+      "create_date": "2000-01-01",
+      "final_change_date": "2023-11-21"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 4,
+    "fields": {
+      "product_name": "Накопительный резерв",
+      "product_description": "ОПИФ Накопительный резерв",
+      "preview": "products/Без_названия_1.png",
+      "category": 2,
+      "price": 2888,
+      "create_date": "2000-01-01",
+      "final_change_date": "2023-11-21"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 5,
+    "fields": {
+      "product_name": "Российские Акции",
+      "product_description": "ОПИФ БКС Российские Акции",
+      "preview": "products/sharing-logo_8IyS9ZD.png",
+      "category": 2,
+      "price": 513,
+      "create_date": "2000-01-01",
+      "final_change_date": "2023-11-21"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 6,
+    "fields": {
+      "product_name": "Капитал",
+      "product_description": "ОПИФ БКС Капитал",
+      "preview": "products/sharing-logo.png",
+      "category": 2,
+      "price": 624,
+      "create_date": "2000-01-01",
+      "final_change_date": "2023-11-21"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 7,
+    "fields": {
+      "product_name": "Сбербанк",
+      "product_description": "Облигация Сбербанк",
+      "preview": "products/Сбер.jpg",
+      "category": 3,
+      "price": 45,
+      "create_date": "2000-01-01",
+      "final_change_date": "2023-11-21"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 8,
+    "fields": {
+      "product_name": "ВТБ",
+      "product_description": "Облигация Банк ВТБ",
+      "preview": "products/Без_названия.png",
+      "category": 3,
+      "price": 142,
+      "create_date": "2000-01-01",
+      "final_change_date": "2023-11-21"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 9,
+    "fields": {
+      "product_name": "СИБУР",
+      "product_description": "Облигация СИБУР",
+      "preview": "products/840px-Screenрололдолдshot_1.png",
+      "category": 3,
+      "price": 23,
+      "create_date": "2000-01-01",
+      "final_change_date": "2023-11-21"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 10,
+    "fields": {
+      "product_name": "Ликвидность",
+      "product_description": "БПИФ Ликвидность УК ВИМ",
+      "preview": "products/ВИМ_Ликвидность.png",
+      "category": 4,
+      "price": 1,
+      "create_date": "2000-01-01",
+      "final_change_date": "2023-11-21"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 11,
+    "fields": {
+      "product_name": "Индекс МосБиржи",
+      "product_description": "БПИФ Индекс МосБиржи УК ВИМ",
+      "preview": "products/IMOEX_Z7NPT6C.png",
+      "category": 4,
+      "price": 141,
+      "create_date": "2000-01-01",
+      "final_change_date": "2023-11-21"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 12,
+    "fields": {
+      "product_name": "Золото",
+      "product_description": "БПИФ Золото.Биржевой УК ВИМ",
+      "preview": "products/Золото.jpg",
+      "category": 4,
+      "price": 2,
+      "create_date": "2000-01-01",
+      "final_change_date": "2023-11-21"
+    }
+  },
+  {
+    "model": "catalog.product",
+    "pk": 24,
+    "fields": {
+      "product_name": "IMOEX",
+      "product_description": "Московской Биржи Индекс",
+      "preview": "products/IMOEX_wupCoIv.png",
+      "category": 2,
+      "price": 2034,
+      "create_date": "2023-11-30",
+      "final_change_date": "2023-12-12"
+    }
+  },
+  {
+    "model": "catalog.version",
+    "pk": 9,
+    "fields": {
+      "prod": 24,
+      "version_number": 6,
+      "version_name": "Шесть",
+      "is_active": true
+    }
+  },
+  {
+    "model": "catalog.version",
+    "pk": 10,
+    "fields": {
+      "prod": 24,
+      "version_number": 1,
+      "version_name": "Первая",
+      "is_active": false
+    }
+  },
+  {
+    "model": "catalog.version",
+    "pk": 11,
+    "fields": {
+      "prod": 8,
+      "version_number": 2,
+      "version_name": "Вторая",
+      "is_active": false
+    }
+  },
+  {
+    "model": "catalog.version",
+    "pk": 12,
+    "fields": {
+      "prod": 24,
+      "version_number": 3,
+      "version_name": "Третья",
+      "is_active": false
+    }
+  },
+  {
+    "model": "catalog.version",
+    "pk": 13,
+    "fields": {
+      "prod": 12,
+      "version_number": 1,
+      "version_name": "Один",
+      "is_active": false
+    }
+  },
+  {
+    "model": "catalog.version",
+    "pk": 14,
+    "fields": {
+      "prod": 8,
+      "version_number": 9,
+      "version_name": "Девять",
+      "is_active": true
+    }
+  },
+  {
+    "model": "catalog.version",
+    "pk": 15,
+    "fields": {
+      "prod": 8,
+      "version_number": 11,
+      "version_name": "Одиннадцать",
+      "is_active": false
+    }
+  },
+  {
+    "model": "catalog.version",
+    "pk": 16,
+    "fields": {
+      "prod": 12,
+      "version_number": 2,
+      "version_name": "Два",
+      "is_active": true
+    }
+  },
+  {
+    "model": "catalog.contacts",
+    "pk": 2,
+    "fields": {
+      "contact_name": "Владимир",
+      "contact_email": "vladimir@testmail.com"
+    }
+  },
+  {
+    "model": "catalog.contacts",
+    "pk": 3,
+    "fields": {
+      "contact_name": "Саша",
+      "contact_email": "sasha@testmail.com"
+    }
+  },
+  {
+    "model": "catalog.contacts",
+    "pk": 4,
+    "fields": {
+      "contact_name": "Виктор",
+      "contact_email": "viktor@testmail.com"
+    }
+  },
+  {
+    "model": "catalog.contacts",
+    "pk": 5,
+    "fields": {
+      "contact_name": "Виктор",
+      "contact_email": "cerbin94@gmail.com"
+    }
+  },
+  {
+    "model": "catalog.contacts",
+    "pk": 6,
+    "fields": {
+      "contact_name": "Виктор",
+      "contact_email": "cerbin94@gmail.com"
+    }
+  },
+  {
+    "model": "catalog.contacts",
+    "pk": 7,
+    "fields": {
+      "contact_name": "Саша",
+      "contact_email": "cerbin94@gmail.com"
+    }
+  },
+  {
+    "model": "catalog.contacts",
+    "pk": 8,
+    "fields": {
+      "contact_name": "Виктор",
+      "contact_email": "davydov.viktor.andreevich@gmai"
+    }
+  },
+  {
+    "model": "catalog.blog",
+    "pk": 14,
+    "fields": {
+      "article_name": "Статья 3",
+      "slug": "statya-2",
+      "contents": "ваывфафыв",
+      "preview": "",
+      "create_date": "2023-11-30",
+      "publication_date": "2023-11-08",
+      "views_count": 121,
+      "is_published": true
+    }
+  },
+  {
+    "model": "catalog.blog",
+    "pk": 16,
+    "fields": {
+      "article_name": "Новая статья",
+      "slug": "novaya-statya",
+      "contents": "ававафыва",
+      "preview": "",
+      "create_date": "2023-12-12",
+      "publication_date": "2023-12-12",
+      "views_count": 2,
+      "is_published": true
+    }
+  },
+  {
+    "model": "catalog.blog",
+    "pk": 17,
+    "fields": {
+      "article_name": "Суперская статья",
+      "slug": "superskaya-statya",
+      "contents": "Очень суперская",
+      "preview": "",
+      "create_date": "2023-11-08",
+      "publication_date": "2023-12-12",
+      "views_count": 17,
+      "is_published": true
+    }
+  }
+]
